@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.env
+venv/
+env/
+.venv/
+
+# Presentations & Documents
+*.pptx
+~$*.pptx
+*.docx
+~$*.docx
+*.xlsx
+*.pdf
+
+# PPT Generation & Inspection Scripts
+generate_*.py
+read_ppt.py
+fix_bullets.py
+
+# Diagrams & Raw Assets
+*.html
+*.mmd
+*.svg
+mermaid_*.txt
+*.png
+*.jpg
+*.jpeg
+
+# Internal Review Notes & Specifications
+Core_Pipeline_and_Architecture_Guide.md
+Review_2_Comprehensive_Report.md
+System_Architecture_Specification.md
+System_Flowchart_Specification.md
+
+# OS & IDEs
+Thumbs.db
+.DS_Store
+.vscode/
+.idea/

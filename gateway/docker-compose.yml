@@ -1,0 +1,51 @@
+# ==============================================================================
+# VitalSync Edge Gateway Container Stack
+# Target Hardware: Raspberry Pi 5 (8GB) / Local Dev Edge Core
+# Services:
+#   1. Eclipse Mosquitto - High-throughput MQTT Broker (QoS 1)
+#   2. InfluxDB v2 - Real-time Time-Series Database for Nanosecond Telemetry
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  # ----------------------------------------------------------------------------
+  # MQTT Message Broker
+  # Ingests telemetry packets from ESP32 edge sensor nodes
+  # ----------------------------------------------------------------------------
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: vitalsync_mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"   # Standard MQTT Protocol (ESP32 & Python workers)
+      - "9001:9001"   # MQTT over WebSockets (HTML5 / Next.js Canvas UI)
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+
+  # ----------------------------------------------------------------------------
+  # Time-Series Telemetry Store
+  # Stores high-frequency vitals and ventilator sensor data
+  # ----------------------------------------------------------------------------
+  influxdb:
+    image: influxdb:2.7-alpine
+    container_name: vitalsync_influxdb
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=vitalsync_admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=VitalSyncSecure2026!
+      - DOCKER_INFLUXDB_INIT_ORG=vitalsync_hospital
+      - DOCKER_INFLUXDB_INIT_BUCKET=icu_telemetry
+      - DOCKER_INFLUXDB_INIT_RETENTION=7d
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+
+volumes:
+  mosquitto_data:
+  mosquitto_log:
+  influxdb_data:
